@@ -3,7 +3,8 @@ import './App.css';
 import {Home} from './Home';
 import {Department} from './Department';
 import {Employee} from './Employee';
-import {BrowserRouter, Route, Switch,NavLink} from 'react-router-dom';
+import EmployeeDetail from './EmployeeDetail';
+import {BrowserRouter, Route, Switch, NavLink} from 'react-router-dom';
 
 function App() {
   return (
@@ -30,6 +31,16 @@ function App() {
               Employee
             </NavLink>
           </li>
+          <li className="nav-item- m-1">
+            <NavLink className="btn btn-light btn-outline-primary" to="/employeedetail/1">
+              Employee 1
+            </NavLink>
+          </li>
+          <li className="nav-item- m-1">
+            <NavLink className="btn btn-light btn-outline-primary" to="/employeedetail/2">
+              Employee 2
+            </NavLink>
+          </li>
         </ul>
       </nav>
 
@@ -37,6 +48,7 @@ function App() {
         <Route path='/home' component={Home}/>
         <Route path='/department' component={Department}/>
         <Route path='/employee' component={Employee}/>
+        <Route path='/employeedetail/:id'><EmployeeDetail /></Route>
       </Switch>
     </div>
     </BrowserRouter>
