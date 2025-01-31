@@ -49,7 +49,7 @@ class EmployeeDetail extends React.Component {
         PhotoPath,
         PhotoFileName
     }=this.state;
-        return (<div>{employees.map(emp=><h2>Now showing Employee {emp.EmployeeName}</h2>)}
+        return (<div>{employees.map(emp=><h2>Employee {emp.EmployeeName}</h2>)}
         <br />
         {employees.map(emp=><img src={PhotoPath+emp.PhotoFileName} />)}
         <table className="table table-striped">
