@@ -31,16 +31,6 @@ function App() {
               Employee
             </NavLink>
           </li>
-          <li className="nav-item- m-1">
-            <NavLink className="btn btn-light btn-outline-primary" to="/employeedetail/1">
-              Employee 1
-            </NavLink>
-          </li>
-          <li className="nav-item- m-1">
-            <NavLink className="btn btn-light btn-outline-primary" to="/employeedetail/2">
-              Employee 2
-            </NavLink>
-          </li>
         </ul>
       </nav>
 
