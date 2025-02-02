@@ -176,9 +176,9 @@ export class Department extends Component{
             <div className="d-flex flex-row">
 
             
-            <input className="form-control m-2"
+            {/*<input className="form-control m-2"
             onChange={this.changeDepartmentIdFilter}
-            placeholder="Filter"/>
+            placeholder="Filter"/>*/}
             
             <button type="button" className="btn btn-light"
             onClick={()=>this.sortResult('DepartmentId',true)}>
