@@ -13,7 +13,7 @@ namespace WebApplication1.Models
 
         public string TimeStamp { get; set; }
 
-        public string  Message { get; set; }
-        public string ImageURL { get; set; }
+        public string message { get; set; }
+        public string imageUrl { get; set; }
     }
 }

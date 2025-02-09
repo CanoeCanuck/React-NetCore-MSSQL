@@ -98,10 +98,10 @@ namespace WebApplication1.Controllers
                 myCon.Open();
                 using (SqlCommand myCommand = new SqlCommand(query, myCon))
                 {
-                    myCommand.Parameters.AddWithValue("@AlertType", alert.camera);
-                    myCommand.Parameters.AddWithValue("@Confidence", alert.Confidence);
-                    myCommand.Parameters.AddWithValue("@Message", alert.Message);
-                    myCommand.Parameters.AddWithValue("@ImageURL", alert.ImageURL);
+                    myCommand.Parameters.AddWithValue("@AlertType", alert.camera ?? (object)DBNull.Value);
+                    myCommand.Parameters.AddWithValue("@Confidence", alert.Confidence );
+                    myCommand.Parameters.AddWithValue("@Message", alert.message ?? (object)DBNull.Value);
+                    myCommand.Parameters.AddWithValue("@ImageURL", alert.imageUrl ?? (object)DBNull.Value);
                     myReader = myCommand.ExecuteReader();
                     table.Load(myReader);
                     myReader.Close();
