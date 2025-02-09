@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
 	  <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
-	  <DockerfileTag>hankmeyer/react-nginx-app</DockerfileTag>
+	  <DockerfileTag>hankmeyer/webapplication1</DockerfileTag>
   </PropertyGroup>
 
   <ItemGroup>
