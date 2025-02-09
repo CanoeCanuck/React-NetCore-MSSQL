@@ -10,6 +10,7 @@ using Microsoft.Extensions.Configuration;
 using WebApplication1.Models;
 using Microsoft.AspNetCore.Hosting;
 using System.IO;
+using Newtonsoft.Json;
 
 namespace WebApplication1.Controllers
 {
@@ -29,10 +30,11 @@ namespace WebApplication1.Controllers
         [HttpGet]
         public JsonResult Get()
         {
-            string query = @"
-                            SELECT AlertType,Confidence,TimeStamp,Message,ImageURL
-                            FROM MotionAlert
-                            ORDER BY AlertId DESC
+            string query = @"SELECT ma.AlertID, ma.Camera,ma.TimeStamp,ma.Message,ma.ImageURL,COUNT(mad.MotionAlertDetailID) as 'TotalObjects'
+                            FROM MotionAlert ma
+                            LEFT JOIN MotionAlertDetail mad ON ma.AlertID = mad.MotionAlertID
+                            GROUP BY ma.AlertID, ma.Camera,ma.TimeStamp,ma.Message,ma.ImageURL
+                            ORDER BY 1 DESC
                             ";
 
             DataTable table = new DataTable();
@@ -57,9 +59,18 @@ namespace WebApplication1.Controllers
         public JsonResult GetDetail(int id)
         {
             string query = @"
-                            SELECT AlertType,Confidence,TimeStamp,Message,ImageURL
-                            FROM MotionAlert
-                            WHERE AlertId = @AlertId
+                            SELECT [MotionAlertDetailID]
+                              ,[MotionAlertID]
+                              ,[Label]
+                              ,[Confidence]
+                              ,[MinX]
+                              ,[MinY]
+                              ,[MaxX]
+                              ,[MaxY]
+                              ,[SizeX]
+                              ,[SizeY]
+                          FROM [dbo].[MotionAlertDetail]
+                            WHERE MotionAlertID = @AlertId
                             ";
 
             DataTable table = new DataTable();
@@ -82,12 +93,12 @@ namespace WebApplication1.Controllers
         }
 
         [HttpPost]
-        public JsonResult Post(MotionAlert alert)
+        public JsonResult Post(Root alert)
         {
             string query = @"
                            insert into dbo.MotionAlert
-                           (AlertType,Confidence,TimeStamp,Message,ImageURL)
-                    values (@AlertType,@Confidence,GETDATE(),@Message,@ImageURL)
+                           (Camera,TimeStamp,Message,ImageURL)
+                    values (@Camera,GETDATE(),@Message,@ImageURL)
                             ";
 
             DataTable table = new DataTable();
@@ -98,14 +109,44 @@ namespace WebApplication1.Controllers
                 myCon.Open();
                 using (SqlCommand myCommand = new SqlCommand(query, myCon))
                 {
-                    myCommand.Parameters.AddWithValue("@AlertType", alert.camera ?? (object)DBNull.Value);
-                    myCommand.Parameters.AddWithValue("@Confidence", alert.Confidence );
+                    myCommand.Parameters.AddWithValue("@Camera", alert.camera ?? (object)DBNull.Value);
                     myCommand.Parameters.AddWithValue("@Message", alert.message ?? (object)DBNull.Value);
                     myCommand.Parameters.AddWithValue("@ImageURL", alert.imageUrl ?? (object)DBNull.Value);
                     myReader = myCommand.ExecuteReader();
                     table.Load(myReader);
                     myReader.Close();
                     myCon.Close();
+                }
+            }
+
+            var detail = JsonConvert.SerializeObject(alert);
+            dynamic predict = JsonConvert.DeserializeObject<dynamic>(detail);
+
+            foreach (var det in predict.predictions)
+            {
+                string Label = det.Label;
+                string Confidence = det.Confidence;
+                string MinX = det.MinX;
+                string MinY = det.MinY;
+                string MaxX = det.MaxX;
+                string MaxY = det.MaxY;
+                string SizeX = det.SizeX;
+                string SizeY = det.SizeY;
+                string insertStatement = $"INSERT INTO dbo.MotionAlertDetail (MotionAlertID, Label, Confidence, MinX, MinY, MaxX, MaxY, SizeX, SizeY ) SELECT (SELECT MAX(AlertID) FROM MotionAlert), '{Label}', {Confidence}, {MinX}, {MinY}, {MaxX}, {MaxY}, {SizeX}, {SizeY};";
+
+                DataTable tabledet = new DataTable();
+                string sqlDataSourcedet = _configuration.GetConnectionString("EmployeeAppCon");
+                SqlDataReader myReaderdet;
+                using (SqlConnection myCondet = new SqlConnection(sqlDataSourcedet))
+                {
+                    myCondet.Open();
+                    using (SqlCommand myCommanddet = new SqlCommand(insertStatement, myCondet))
+                    {
+                        myReaderdet = myCommanddet.ExecuteReader();
+                        tabledet.Load(myReaderdet);
+                        myReaderdet.Close();
+                        myCondet.Close();
+                    }
                 }
             }
 
