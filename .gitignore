@@ -2,3 +2,4 @@ api/WebApplication1/.vs/
 api/WebApplication1/WebApplication1/bin/
 api/WebApplication1/WebApplication1/obj/
 api/WebApplication1/.dockerignore
+api/WebApplication1/WebApplication1/appsettings.json

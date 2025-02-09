@@ -2,6 +2,8 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
+	  <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+	  <DockerfileTag>hankmeyer/react-nginx-app</DockerfileTag>
   </PropertyGroup>
 
   <ItemGroup>
@@ -11,6 +13,10 @@
 
   <ItemGroup>
     <Folder Include="Photos\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="Models\MotionAlert.cs" />
   </ItemGroup>
 
 
